@@ -2,6 +2,8 @@
   export let username;
   export let displayname;
   export let profileSrc;
+
+  import { slide } from 'svelte/transition';
 </script>
 
 <style>
@@ -27,6 +29,7 @@
     padding: 1rem;
 
     width: 100%;
+    z-index: 1; /* prevent opacity bug when transitioning images */
   }
 
   .inner {
@@ -48,7 +51,7 @@
 
 </style>
 
-<section>
+<section transition:slide>
   <div class="heading">
     <img src={profileSrc} alt={displayname} />
     <div class="inner">

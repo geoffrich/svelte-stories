@@ -9,6 +9,7 @@
   article {
     background-image: var(--src);
     height: 100%;
+    transition: opacity 0.3s;
   }
 
   article.seen {
@@ -17,4 +18,4 @@
   }
 </style>
 
-<article class:seen={isSeen} style="--src: url({src});" on:click></article>
+<article class:seen={isSeen} style="--src: url({src});"></article>
