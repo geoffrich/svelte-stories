@@ -4,6 +4,10 @@ html, body {
 	height: 100%;
 }
 
+* {
+	box-sizing: border-box;
+}
+
 body {
 	color: #333;
 	margin: 0;
