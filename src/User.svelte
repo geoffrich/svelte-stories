@@ -2,34 +2,41 @@
   export let username;
   export let displayname;
   export let profileSrc;
+  export let stackOrder;
 
   import { slide } from 'svelte/transition';
+  
+  let duration = 500;
 </script>
 
 <style>
   section {
     height: 100%;
-    position: relative;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
     display: grid;
-    grid: 1fr / 1fr;
+    grid: auto 1fr / 1fr;
+    z-index: var(--stack-order);
   }
 
   section > :global(*) {
-    grid-area: 1 / 1;
+    grid-row: 1 / span 2;
+    grid-column: 1;
   }
 
   .heading {
     display: flex;
     align-items: start;
-    position: absolute;
-    top: 0;
-    left: 0;
     background: rgba(16, 16, 16, 0.4);
     color: white;
     padding: 1rem;
 
     width: 100%;
-    z-index: 1; /* prevent opacity bug when transitioning images */
+    z-index: 1;
+    grid-row: 1;
+    margin-top: 2rem;
   }
 
   .inner {
@@ -51,7 +58,9 @@
 
 </style>
 
-<section transition:slide>
+<section 
+  style="--stack-order: {stackOrder}"
+  transition:slide="{{duration: duration}}">
   <div class="heading">
     <img src={profileSrc} alt={displayname} />
     <div class="inner">

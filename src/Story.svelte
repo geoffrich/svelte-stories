@@ -7,9 +7,11 @@
 
 <style>
   article {
-    background-image: var(--src);
+    background-image: var(--src), linear-gradient(to top, rgb(249, 249, 249), rgb(226, 226, 226));
+    background-size: cover;
     height: 100%;
     transition: opacity 0.3s;
+    border-radius: 3ch;
   }
 
   article.seen {
