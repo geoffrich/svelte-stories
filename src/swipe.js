@@ -31,7 +31,6 @@ export default function swipe(node) {
           })
         );
       }
-      console.log(dx);
 
       x0 = null;
     }

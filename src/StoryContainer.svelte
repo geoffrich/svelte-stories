@@ -10,7 +10,12 @@
 
   function handleClick(e) {
     const median = stories.offsetLeft + stories.clientWidth / 2;
-    setImageVisibility(e.clientX > median);
+    const forward = e.clientX > median;
+    if (e.ctrlKey) {
+      forward ? nextUser() : previousUser();
+    } else {
+      setImageVisibility(forward);
+    }
   }
 
   function handleSwipe(e) {
@@ -41,13 +46,13 @@
     }
   }
 
-  function handleKeydown({ key }) {
+  function handleKeydown({ key, ctrlKey }) {
     switch (key) {
       case 'ArrowLeft':
-        setImageVisibility(false);
+        ctrlKey ? previousUser() : setImageVisibility(false);
         break;
       case 'ArrowRight':
-        setImageVisibility(true);
+        ctrlKey ? nextUser() : setImageVisibility(true);
         break;
     }
   }
