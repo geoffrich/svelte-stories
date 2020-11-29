@@ -2,14 +2,27 @@
   import Story from './Story.svelte';
   import User from './User.svelte';
   import { users } from './mockData';
+  import swipe from './swipe';
 
   let currentUserIndex = 0;
   let imageIndex = users[currentUserIndex].images.length - 1;
   $: currentUser = users[currentUserIndex];
 
   function handleClick(e) {
-    const median = stories.offsetLeft + (stories.clientWidth / 2);
+    const median = stories.offsetLeft + stories.clientWidth / 2;
     setImageVisibility(e.clientX > median);
+  }
+
+  function handleSwipe(e) {
+    console.log(e);
+    switch (e.detail.direction) {
+      case 'right':
+        previousUser();
+        break;
+      case 'left':
+        nextUser();
+        break;
+    }
   }
 
   function setImageVisibility(forward) {
@@ -30,10 +43,10 @@
 
   function handleKeydown({ key }) {
     switch (key) {
-      case "ArrowLeft":
+      case 'ArrowLeft':
         setImageVisibility(false);
         break;
-      case "ArrowRight":
+      case 'ArrowRight':
         setImageVisibility(true);
         break;
     }
@@ -67,24 +80,33 @@
 
     position: relative;
   }
-  
+
   :global(.stories.focus-visible:focus) {
     outline: 5px solid red;
   }
 </style>
 
-<div class="stories" bind:this={stories} role="region" aria-label="stories" tabindex="0" on:click={handleClick} on:keydown={handleKeydown}>
+<div
+  class="stories"
+  use:swipe
+  bind:this={stories}
+  role="region"
+  aria-label="stories"
+  tabindex="0"
+  on:click={handleClick}
+  on:keydown={handleKeydown}
+  on:swipe={handleSwipe}>
   {#each users as user, userIdx}
-  {#if userIdx >= currentUserIndex}
-    <User 
-      username={user.username} 
-      displayname={user.displayname} 
-      profileSrc={user.profileSrc} 
-      stackOrder={users.length - userIdx}>
-      {#each user.images as image, idx }
-        <Story src={image.src} isSeen={idx > imageIndex} />
-      {/each}
-    </User>
-  {/if}
+    {#if userIdx >= currentUserIndex}
+      <User
+        username={user.username}
+        displayname={user.displayname}
+        profileSrc={user.profileSrc}
+        stackOrder={users.length - userIdx}>
+        {#each user.images as image, idx}
+          <Story src={image.src} isSeen={idx > imageIndex} />
+        {/each}
+      </User>
+    {/if}
   {/each}
 </div>

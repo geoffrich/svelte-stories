@@ -4,7 +4,7 @@
   export let profileSrc;
   export let stackOrder;
 
-  import { slide } from 'svelte/transition';
+  import { fly } from 'svelte/transition';
   
   let duration = 500;
 </script>
@@ -60,7 +60,7 @@
 
 <section 
   style="--stack-order: {stackOrder}"
-  transition:slide="{{duration: duration}}">
+  transition:fly="{{duration: duration, x: -100}}">
   <div class="heading">
     <img src={profileSrc} alt={displayname} />
     <div class="inner">
