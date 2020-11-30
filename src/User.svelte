@@ -20,7 +20,11 @@
     display: grid;
     grid: auto 1fr / 1fr;
     z-index: var(--stack-order);
-    transform: translateX(var(--offset));
+    transform: translate(calc(var(--offset) * 1px));
+  }
+
+  section.returning {
+    transition: transform 0.2s ease-out;
   }
 
   section > :global(*) {
@@ -61,8 +65,9 @@
 </style>
 
 <section 
-  style="--stack-order: {stackOrder}; --offset: {offset}px;"
-  transition:fly="{{duration: duration, x: -100}}">
+  style="--stack-order: {stackOrder}; --offset: {offset};"
+  transition:fly="{{duration: duration, x: -100}}"
+  class:returning={offset === 0}>
   <div class="heading">
     <img src={profileSrc} alt={displayname} />
     <div class="inner">

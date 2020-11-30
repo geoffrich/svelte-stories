@@ -69,3 +69,7 @@ button:focus {
 .js-focus-visible :focus:not(.focus-visible) {
 	outline: 3px solid transparent !important; /* important needed to clobber svelte styles */
 }
+
+p {
+	margin: 0;
+}

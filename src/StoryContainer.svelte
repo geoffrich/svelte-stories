@@ -7,7 +7,7 @@
   let currentUserIndex = 0;
   let offset = 0;
   let swiping = false;
-  let imageIndex = users[currentUserIndex].images.length - 1;
+  let imageIndex = getFirstImageIndexForCurrentUser();
   $: currentUser = users[currentUserIndex];
 
   const SWIPE_THRESHOLD = 150;
@@ -37,7 +37,7 @@
       }
       switch (direction) {
         case 'right':
-          previousUser();
+          previousUser(true);
           break;
         case 'left':
           nextUser();
@@ -57,7 +57,7 @@
         nextUser();
       }
     } else {
-      if (imageIndex < currentUser.images.length - 1) {
+      if (currentUser && imageIndex < getFirstImageIndexForCurrentUser()) {
         imageIndex++;
       } else {
         previousUser();
@@ -68,7 +68,7 @@
   function handleKeydown({ key, ctrlKey }) {
     switch (key) {
       case 'ArrowLeft':
-        ctrlKey ? previousUser() : setImageVisibility(false);
+        ctrlKey ? previousUser(true) : setImageVisibility(false);
         break;
       case 'ArrowRight':
         ctrlKey ? nextUser() : setImageVisibility(true);
@@ -78,18 +78,22 @@
 
   function nextUser() {
     offset = 0;
-    if (currentUserIndex + 1 < users.length) {
+    if (currentUserIndex < users.length) {
       currentUserIndex++;
-      imageIndex = users[currentUserIndex].images.length - 1;
+      imageIndex = users[currentUserIndex] && getFirstImageIndexForCurrentUser();
     }
   }
 
-  function previousUser() {
+  function previousUser(goToFirstImage = false) {
     offset = 0;
     if (currentUserIndex > 0) {
       currentUserIndex--;
-      imageIndex = 0;
+      imageIndex = goToFirstImage ? getFirstImageIndexForCurrentUser() : 0;
     }
+  }
+
+  function getFirstImageIndexForCurrentUser() {
+    return users[currentUserIndex].images.length - 1;
   }
 
   let stories;
@@ -105,23 +109,35 @@
     margin: 0 auto;
 
     position: relative;
+    user-select: none;
   }
 
   :global(.stories.focus-visible:focus) {
     outline: 5px solid red;
   }
+
+  p {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 700;
+  }
 </style>
+
+<!-- Add to window instead of container to capture swipes outside the window -->
+<svelte:window use:swipe on:swipe={handleSwipe}></svelte:window>
 
 <div
   class="stories"
-  use:swipe
   bind:this={stories}
   role="region"
   aria-label="stories"
   tabindex="0"
   on:click={handleClick}
-  on:keydown={handleKeydown}
-  on:swipe={handleSwipe}>
+  on:keydown={handleKeydown}>
   {#each users as user, userIdx}
     {#if userIdx >= currentUserIndex}
       <User
@@ -136,4 +152,6 @@
       </User>
     {/if}
   {/each}
+  <p>You've reached the end!</p>
+
 </div>
