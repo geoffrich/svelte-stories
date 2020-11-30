@@ -18,7 +18,7 @@ function makeEvent(dx, complete) {
       complete,
       dx
     }
-  })
+  });
 }
 
 export default function swipe(node) {
@@ -55,12 +55,12 @@ export default function swipe(node) {
     destroy() {
       node.removeEventListener('mousedown', setStart);
       node.removeEventListener('touchstart', setStart);
-    
+
       node.removeEventListener('mouseup', finishSwipe);
       node.removeEventListener('touchend', finishSwipe);
 
       node.removeEventListener('mousemove', drag);
       node.removeEventListener('touchmove', drag);
     }
-  }
+  };
 }

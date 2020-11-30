@@ -8,7 +8,8 @@
 
 <style>
   article {
-    background-image: var(--src), linear-gradient(to top, rgb(249, 249, 249), rgb(226, 226, 226));
+    background-image: var(--src),
+      linear-gradient(to top, rgb(249, 249, 249), rgb(226, 226, 226));
     background-size: cover;
     height: 100%;
     border-radius: var(--story-border-radius);
@@ -27,9 +28,11 @@
   }
 </style>
 
-<article transition:fade={{duration: 300 }} style="--src: url({src}); --stack-order: {stackOrder};">
+<article
+  transition:fade={{ duration: 300 }}
+  style="--src: url({src}); --stack-order: {stackOrder};">
   <p class="visually-hidden">Image alt: {alt}</p>
   {#if text}
-  <p class="text">{text}</p>
+    <p class="text">{text}</p>
   {/if}
 </article>

@@ -5,21 +5,21 @@
   import swipe from './swipe';
 
   let currentUserIndex = 0;
+  let currentImageIndex = 0;
   let offset = 0;
   let swiping = false;
-  let currentImageIndex = getFirstImageIndexForCurrentUser();
-  $: currentUser = users[currentUserIndex];
+  let stories;
+  $: median = stories && stories.offsetLeft + stories.clientWidth / 2;
 
   const SWIPE_THRESHOLD = 100;
 
   function handleClick(e) {
     if (swiping) return;
-    const median = stories.offsetLeft + stories.clientWidth / 2;
     const forward = e.clientX > median;
     if (e.ctrlKey) {
       forward ? nextUser() : previousUser(true);
     } else {
-      setImageVisibility(forward);
+      changeImage(forward);
     }
   }
 
@@ -27,9 +27,9 @@
   function handleSwipe(e) {
     const { complete, direction, dx } = e.detail;
     swiping = true;
-    clearTimeout(swipeTimeout);
     // prevent clicks from triggering on a swipe
-    swipeTimeout = setTimeout(() => swiping = false, 100);
+    clearTimeout(swipeTimeout);
+    swipeTimeout = setTimeout(() => (swiping = false), 100);
     if (complete) {
       if (Math.abs(dx) < SWIPE_THRESHOLD) {
         offset = 0;
@@ -43,13 +43,12 @@
           nextUser();
           break;
       }
-
     } else {
       offset = direction === 'left' && dx / 3;
     }
   }
 
-  function setImageVisibility(forward) {
+  function changeImage(forward) {
     if (forward) {
       if (currentImageIndex < getLastImageIndexForCurrentUser()) {
         currentImageIndex++;
@@ -57,7 +56,7 @@
         nextUser();
       }
     } else {
-      if (currentUser && currentImageIndex > getFirstImageIndexForCurrentUser()) {
+      if (currentImageIndex > 0) {
         currentImageIndex--;
       } else {
         previousUser();
@@ -68,10 +67,10 @@
   function handleKeydown({ key, ctrlKey }) {
     switch (key) {
       case 'ArrowLeft':
-        ctrlKey ? previousUser(true) : setImageVisibility(false);
+        ctrlKey ? previousUser(true) : changeImage(false);
         break;
       case 'ArrowRight':
-        ctrlKey ? nextUser() : setImageVisibility(true);
+        ctrlKey ? nextUser() : changeImage(true);
         break;
     }
   }
@@ -80,7 +79,7 @@
     offset = 0;
     if (currentUserIndex < users.length) {
       currentUserIndex++;
-      currentImageIndex = users[currentUserIndex] && getFirstImageIndexForCurrentUser();
+      currentImageIndex = 0;
     }
   }
 
@@ -88,19 +87,17 @@
     offset = 0;
     if (currentUserIndex > 0) {
       currentUserIndex--;
-      currentImageIndex = goToFirstImage ? getFirstImageIndexForCurrentUser() : getLastImageIndexForCurrentUser();
+      currentImageIndex = goToFirstImage
+        ? 0
+        : getLastImageIndexForCurrentUser();
     }
   }
 
-  function getFirstImageIndexForCurrentUser() {
-    return 0;
-  }
-
   function getLastImageIndexForCurrentUser() {
-    return users[currentUserIndex] ? users[currentUserIndex].images.length - 1 : 0;
+    return users[currentUserIndex]
+      ? users[currentUserIndex].images.length - 1
+      : 0;
   }
-
-  let stories;
 </script>
 
 <style>
@@ -134,14 +131,14 @@
   .end {
     position: absolute;
     top: 50%;
-    left: 0;
-    right: 0;
+    width: 100%;
     text-align: center;
     font-size: 2rem;
     font-weight: 700;
   }
 
-  #hover, #focus {
+  #hover,
+  #focus {
     display: none;
     padding: 0.5rem 1rem 1rem 1rem;
   }
@@ -157,13 +154,16 @@
     border-radius: 0 0 var(--story-border-radius) var(--story-border-radius);
   }
 
-  :global(.stories:hover:not(.focus-visible)) #hover, :global(.stories.focus-visible:focus #focus) {
+  /* Show relevant instructions on hover/focus 
+    Adapted from Inclusive Components */
+  :global(.stories:hover:not(.focus-visible)) #hover,
+  :global(.stories.focus-visible:focus #focus) {
     display: block;
   }
 </style>
 
 <!-- Add to window instead of container to capture swipes outside the window -->
-<svelte:window use:swipe on:swipe={handleSwipe}></svelte:window>
+<svelte:window use:swipe on:swipe={handleSwipe} />
 
 <div
   class="stories"
@@ -180,17 +180,23 @@
         {user}
         stackOrder={users.length - userIdx}
         offset={userIdx === currentUserIndex ? offset : 0}>
-        {#each user.images as image, idx}
-          {#if userIdx !== currentUserIndex || idx >= currentImageIndex}
-            <Story {image} stackOrder={user.images.length - idx} />
+        {#each user.images as image, imageIdx}
+          {#if userIdx !== currentUserIndex || imageIdx >= currentImageIndex}
+            <Story {image} stackOrder={user.images.length - imageIdx} />
           {/if}
         {/each}
       </User>
     {/if}
   {/each}
   <p class="end">You've reached the end!</p>
-    <div class="instructions" style="--stack-order: {users.length + 1}">
-      <p id="hover">Tap on the left and right side to scroll. Holding CTRL or swiping skips to the next user.</p>
-      <p id="focus">Use the left and right arrow keys to scroll. Holding CTRL or swiping skips to the next user.</p>
-    </div>
+  <div class="instructions" style="--stack-order: {users.length + 1}">
+    <p id="hover">
+      Tap on the left and right side to scroll. Holding CTRL or swiping skips to
+      the next user.
+    </p>
+    <p id="focus">
+      Use the left and right arrow keys to scroll. Holding CTRL or swiping skips
+      to the next user.
+    </p>
+  </div>
 </div>

@@ -4,21 +4,14 @@
   export let offset;
 
   const { username, displayname, profileSrc } = user;
-
-
   import { fly } from 'svelte/transition';
-import { users } from './mockData';
-  
-  let duration = 500;
 </script>
 
 <style>
   section {
     height: 100%;
+    width: 100%;
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
     display: grid;
     grid: auto 1fr / 1fr;
     z-index: var(--stack-order);
@@ -62,13 +55,11 @@ import { users } from './mockData';
     max-width: 50px;
     margin-right: 10px;
   }
-
-
 </style>
 
-<section 
+<section
   style="--stack-order: {stackOrder}; --offset: {offset};"
-  transition:fly="{{duration: duration, x: -100}}"
+  transition:fly={{ duration: 500, x: -100 }}
   class:returning={offset === 0}>
   <div class="heading" style="--stack-order: {user.images.length + 1}">
     <img src={profileSrc} alt={displayname} />
@@ -78,5 +69,5 @@ import { users } from './mockData';
     </div>
   </div>
 
-  <slot></slot>
+  <slot />
 </section>
