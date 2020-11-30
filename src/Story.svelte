@@ -11,7 +11,7 @@
     background-image: var(--src), linear-gradient(to top, rgb(249, 249, 249), rgb(226, 226, 226));
     background-size: cover;
     height: 100%;
-    border-radius: 3ch;
+    border-radius: var(--story-border-radius);
     z-index: var(--stack-order);
     display: grid;
     place-items: center;

@@ -1,9 +1,10 @@
-// https://css-tricks.com/simple-swipe-with-vanilla-javascript/
+// Adapted from https://css-tricks.com/simple-swipe-with-vanilla-javascript/
 
-let x0 = null;
+let startX = null;
+const SWIPE_THRESHOLD = 20;
 
-function lock(e) {
-  x0 = unify(e).clientX;
+function setStart(e) {
+  startX = unify(e).clientX;
 }
 
 function unify(e) {
@@ -21,43 +22,42 @@ function makeEvent(dx, complete) {
 }
 
 export default function swipe(node) {
-  node.addEventListener('mousedown', lock);
-  node.addEventListener('touchstart', lock);
+  node.addEventListener('mousedown', setStart);
+  node.addEventListener('touchstart', setStart);
 
-  node.addEventListener('mouseup', move);
-  node.addEventListener('touchend', move);
+  node.addEventListener('mouseup', finishSwipe);
+  node.addEventListener('touchend', finishSwipe);
 
   node.addEventListener('mousemove', drag);
   node.addEventListener('touchmove', drag);
 
   function drag(e) {
     e.preventDefault();
-    if (x0 || x0 === 0) {
-      let dx = unify(e).clientX - x0;
+    if (startX || startX === 0) {
+      let dx = unify(e).clientX - startX;
       node.dispatchEvent(makeEvent(dx, false));
     }
   }
 
-  function move(e) {
-    if (x0 || x0 === 0) {
-      let dx = unify(e).clientX - x0,
-        s = Math.sign(dx);
+  function finishSwipe(e) {
+    if (startX || startX === 0) {
+      let dx = unify(e).clientX - startX;
 
-      if (Math.abs(dx) > 20) {
+      if (Math.abs(dx) > SWIPE_THRESHOLD) {
         node.dispatchEvent(makeEvent(dx, true));
       }
 
-      x0 = null;
+      startX = null;
     }
   }
 
   return {
     destroy() {
-      node.removeEventListener('mousedown', lock);
-      node.removeEventListener('touchstart', lock);
+      node.removeEventListener('mousedown', setStart);
+      node.removeEventListener('touchstart', setStart);
     
-      node.removeEventListener('mouseup', move);
-      node.removeEventListener('touchend', move);
+      node.removeEventListener('mouseup', finishSwipe);
+      node.removeEventListener('touchend', finishSwipe);
 
       node.removeEventListener('mousemove', drag);
       node.removeEventListener('touchmove', drag);

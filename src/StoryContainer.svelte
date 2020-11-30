@@ -10,7 +10,7 @@
   let currentImageIndex = getFirstImageIndexForCurrentUser();
   $: currentUser = users[currentUserIndex];
 
-  const SWIPE_THRESHOLD = 150;
+  const SWIPE_THRESHOLD = 100;
 
   function handleClick(e) {
     if (swiping) return;
@@ -97,7 +97,7 @@
   }
 
   function getLastImageIndexForCurrentUser() {
-    return users[currentUserIndex].images.length - 1;
+    return users[currentUserIndex] ? users[currentUserIndex].images.length - 1 : 0;
   }
 
   let stories;
@@ -105,6 +105,8 @@
 
 <style>
   .stories {
+    --story-border-radius: 3ch;
+
     max-width: 480px;
     max-height: 848px;
 
@@ -116,7 +118,13 @@
     user-select: none;
 
     background: lightblue;
-    border-radius: 3ch;
+    border-radius: var(--story-border-radius);
+  }
+
+  @media (max-width: 480px) {
+    .stories {
+      --story-border-radius: 0;
+    }
   }
 
   :global(.stories.focus-visible:focus) {
@@ -146,7 +154,7 @@
     bottom: 0;
     width: 100%;
     text-align: center;
-    border-radius: 0 0 3ch 3ch;
+    border-radius: 0 0 var(--story-border-radius) var(--story-border-radius);
   }
 
   :global(.stories:hover:not(.focus-visible)) #hover, :global(.stories.focus-visible:focus #focus) {
