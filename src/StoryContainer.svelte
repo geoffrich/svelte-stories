@@ -10,6 +10,8 @@
   let imageIndex = users[currentUserIndex].images.length - 1;
   $: currentUser = users[currentUserIndex];
 
+  const SWIPE_THRESHOLD = 150;
+
   function handleClick(e) {
     if (swiping) return;
     const median = stories.offsetLeft + stories.clientWidth / 2;
@@ -21,10 +23,18 @@
     }
   }
 
+  let swipeTimeout;
   function handleSwipe(e) {
     const { complete, direction, dx } = e.detail;
     swiping = true;
+    clearTimeout(swipeTimeout);
+    // prevent clicks from triggering on a swipe
+    swipeTimeout = setTimeout(() => swiping = false, 100);
     if (complete) {
+      if (Math.abs(dx) < SWIPE_THRESHOLD) {
+        offset = 0;
+        return;
+      }
       switch (direction) {
         case 'right':
           previousUser();
@@ -33,10 +43,9 @@
           nextUser();
           break;
       }
-      // prevent clicks from triggering on a swipe
-      setTimeout(() => swiping = false, 100);
+
     } else {
-      offset = direction === 'left' && dx;
+      offset = direction === 'left' && dx / 3;
     }
   }
 
