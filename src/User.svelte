@@ -3,6 +3,7 @@
   export let displayname;
   export let profileSrc;
   export let stackOrder;
+  export let offset;
 
   import { fly } from 'svelte/transition';
   
@@ -19,6 +20,7 @@
     display: grid;
     grid: auto 1fr / 1fr;
     z-index: var(--stack-order);
+    transform: translateX(var(--offset));
   }
 
   section > :global(*) {
@@ -59,7 +61,7 @@
 </style>
 
 <section 
-  style="--stack-order: {stackOrder}"
+  style="--stack-order: {stackOrder}; --offset: {offset}px;"
   transition:fly="{{duration: duration, x: -100}}">
   <div class="heading">
     <img src={profileSrc} alt={displayname} />

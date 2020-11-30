@@ -5,10 +5,13 @@
   import swipe from './swipe';
 
   let currentUserIndex = 0;
+  let offset = 0;
+  let swiping = false;
   let imageIndex = users[currentUserIndex].images.length - 1;
   $: currentUser = users[currentUserIndex];
 
   function handleClick(e) {
+    if (swiping) return;
     const median = stories.offsetLeft + stories.clientWidth / 2;
     const forward = e.clientX > median;
     if (e.ctrlKey) {
@@ -19,14 +22,21 @@
   }
 
   function handleSwipe(e) {
-    console.log(e);
-    switch (e.detail.direction) {
-      case 'right':
-        previousUser();
-        break;
-      case 'left':
-        nextUser();
-        break;
+    const { complete, direction, dx } = e.detail;
+    swiping = true;
+    if (complete) {
+      switch (direction) {
+        case 'right':
+          previousUser();
+          break;
+        case 'left':
+          nextUser();
+          break;
+      }
+      // prevent clicks from triggering on a swipe
+      setTimeout(() => swiping = false, 100);
+    } else {
+      offset = direction === 'left' && dx;
     }
   }
 
@@ -58,6 +68,7 @@
   }
 
   function nextUser() {
+    offset = 0;
     if (currentUserIndex + 1 < users.length) {
       currentUserIndex++;
       imageIndex = users[currentUserIndex].images.length - 1;
@@ -65,6 +76,7 @@
   }
 
   function previousUser() {
+    offset = 0;
     if (currentUserIndex > 0) {
       currentUserIndex--;
       imageIndex = 0;
@@ -107,7 +119,8 @@
         username={user.username}
         displayname={user.displayname}
         profileSrc={user.profileSrc}
-        stackOrder={users.length - userIdx}>
+        stackOrder={users.length - userIdx}
+        offset={userIdx === currentUserIndex ? offset : 0}>
         {#each user.images as image, idx}
           <Story src={image.src} isSeen={idx > imageIndex} />
         {/each}
