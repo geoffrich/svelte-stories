@@ -114,6 +114,9 @@
 
     position: relative;
     user-select: none;
+
+    background: lightblue;
+    border-radius: 3ch;
   }
 
   :global(.stories.focus-visible:focus) {
@@ -179,7 +182,7 @@
   {/each}
   <p class="end">You've reached the end!</p>
     <div class="instructions" style="--stack-order: {users.length + 1}">
-      <p id="hover">Click on the left and right side to scroll. Holding CTRL skips to the next user.</p>
-      <p id="focus">Use the left and right arrow keys to scroll. Holding CTRL skips to the next user.</p>
+      <p id="hover">Tap on the left and right side to scroll. Holding CTRL or swiping skips to the next user.</p>
+      <p id="focus">Use the left and right arrow keys to scroll. Holding CTRL or swiping skips to the next user.</p>
     </div>
 </div>

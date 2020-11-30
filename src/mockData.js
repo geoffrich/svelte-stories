@@ -13,7 +13,11 @@ export const users = [
         src: '/images/stories/percy.jpg',
         alt: 'A grey cat sprawled out and showing its belly'
       },
-      { src: '/images/stories/1.jpg', alt: 'A tractor in a grain field' }
+      {
+        src: '/images/stories/1.jpg',
+        alt: 'A tractor in a grain field',
+        text: 'Hey!'
+      }
     ]
   },
   {
