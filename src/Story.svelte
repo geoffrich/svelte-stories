@@ -1,8 +1,8 @@
 <script>
   export let src;
+  export let stackOrder = 0;
 
-
-  export let isSeen = false;
+  import { fade } from 'svelte/transition';
 </script>
 
 <style>
@@ -10,14 +10,9 @@
     background-image: var(--src), linear-gradient(to top, rgb(249, 249, 249), rgb(226, 226, 226));
     background-size: cover;
     height: 100%;
-    transition: opacity 0.3s;
     border-radius: 3ch;
-  }
-
-  article.seen {
-    opacity: 0;
-    pointer-events: none;
+    z-index: var(--stack-order);
   }
 </style>
 
-<article class:seen={isSeen} style="--src: url({src});"></article>
+<article transition:fade={{duration: 300 }} style="--src: url({src}); --stack-order: {stackOrder};"></article>

@@ -1,11 +1,13 @@
 <script>
-  export let username;
-  export let displayname;
-  export let profileSrc;
+  export let user;
   export let stackOrder;
   export let offset;
 
+  const { username, displayname, profileSrc } = user;
+
+
   import { fly } from 'svelte/transition';
+import { users } from './mockData';
   
   let duration = 500;
 </script>
@@ -40,7 +42,7 @@
     padding: 1rem;
 
     width: 100%;
-    z-index: 1;
+    z-index: var(--stack-order);
     grid-row: 1;
     margin-top: 2rem;
   }
@@ -68,7 +70,7 @@
   style="--stack-order: {stackOrder}; --offset: {offset};"
   transition:fly="{{duration: duration, x: -100}}"
   class:returning={offset === 0}>
-  <div class="heading">
+  <div class="heading" style="--stack-order: {user.images.length + 1}">
     <img src={profileSrc} alt={displayname} />
     <div class="inner">
       <h2>{displayname}</h2>

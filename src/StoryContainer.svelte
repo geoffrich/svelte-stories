@@ -7,7 +7,7 @@
   let currentUserIndex = 0;
   let offset = 0;
   let swiping = false;
-  let imageIndex = getFirstImageIndexForCurrentUser();
+  let currentImageIndex = getFirstImageIndexForCurrentUser();
   $: currentUser = users[currentUserIndex];
 
   const SWIPE_THRESHOLD = 150;
@@ -51,14 +51,14 @@
 
   function setImageVisibility(forward) {
     if (forward) {
-      if (imageIndex > 0) {
-        imageIndex--;
+      if (currentImageIndex < getLastImageIndexForCurrentUser()) {
+        currentImageIndex++;
       } else {
         nextUser();
       }
     } else {
-      if (currentUser && imageIndex < getFirstImageIndexForCurrentUser()) {
-        imageIndex++;
+      if (currentUser && currentImageIndex > getFirstImageIndexForCurrentUser()) {
+        currentImageIndex--;
       } else {
         previousUser();
       }
@@ -80,7 +80,7 @@
     offset = 0;
     if (currentUserIndex < users.length) {
       currentUserIndex++;
-      imageIndex = users[currentUserIndex] && getFirstImageIndexForCurrentUser();
+      currentImageIndex = users[currentUserIndex] && getFirstImageIndexForCurrentUser();
     }
   }
 
@@ -88,11 +88,15 @@
     offset = 0;
     if (currentUserIndex > 0) {
       currentUserIndex--;
-      imageIndex = goToFirstImage ? getFirstImageIndexForCurrentUser() : 0;
+      currentImageIndex = goToFirstImage ? getFirstImageIndexForCurrentUser() : getLastImageIndexForCurrentUser();
     }
   }
 
   function getFirstImageIndexForCurrentUser() {
+    return 0;
+  }
+
+  function getLastImageIndexForCurrentUser() {
     return users[currentUserIndex].images.length - 1;
   }
 
@@ -141,13 +145,13 @@
   {#each users as user, userIdx}
     {#if userIdx >= currentUserIndex}
       <User
-        username={user.username}
-        displayname={user.displayname}
-        profileSrc={user.profileSrc}
+        {user}
         stackOrder={users.length - userIdx}
         offset={userIdx === currentUserIndex ? offset : 0}>
         {#each user.images as image, idx}
-          <Story src={image.src} isSeen={idx > imageIndex} />
+          {#if idx >= currentImageIndex}
+            <Story src={image.src} stackOrder={user.images.length - idx} />
+          {/if}
         {/each}
       </User>
     {/if}
