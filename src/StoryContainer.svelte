@@ -17,7 +17,7 @@
     const median = stories.offsetLeft + stories.clientWidth / 2;
     const forward = e.clientX > median;
     if (e.ctrlKey) {
-      forward ? nextUser() : previousUser();
+      forward ? nextUser() : previousUser(true);
     } else {
       setImageVisibility(forward);
     }
@@ -120,7 +120,7 @@
     outline: 5px solid red;
   }
 
-  p {
+  .end {
     position: absolute;
     top: 50%;
     left: 0;
@@ -128,6 +128,26 @@
     text-align: center;
     font-size: 2rem;
     font-weight: 700;
+  }
+
+  #hover, #focus {
+    display: none;
+    padding: 0.5rem 1rem 1rem 1rem;
+  }
+
+  .instructions {
+    z-index: var(--stack-order);
+    position: absolute;
+    background: black;
+    color: white;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    border-radius: 0 0 3ch 3ch;
+  }
+
+  :global(.stories:hover:not(.focus-visible)) #hover, :global(.stories.focus-visible:focus #focus) {
+    display: block;
   }
 </style>
 
@@ -140,6 +160,7 @@
   role="region"
   aria-label="stories"
   tabindex="0"
+  aria-describedby="focus"
   on:click={handleClick}
   on:keydown={handleKeydown}>
   {#each users as user, userIdx}
@@ -149,13 +170,16 @@
         stackOrder={users.length - userIdx}
         offset={userIdx === currentUserIndex ? offset : 0}>
         {#each user.images as image, idx}
-          {#if idx >= currentImageIndex}
-            <Story src={image.src} stackOrder={user.images.length - idx} />
+          {#if userIdx !== currentUserIndex || idx >= currentImageIndex}
+            <Story {image} stackOrder={user.images.length - idx} />
           {/if}
         {/each}
       </User>
     {/if}
   {/each}
-  <p>You've reached the end!</p>
-
+  <p class="end">You've reached the end!</p>
+    <div class="instructions" style="--stack-order: {users.length + 1}">
+      <p id="hover">Click on the left and right side to scroll. Holding CTRL skips to the next user.</p>
+      <p id="focus">Use the left and right arrow keys to scroll. Holding CTRL skips to the next user.</p>
+    </div>
 </div>
