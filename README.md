@@ -4,6 +4,8 @@ This is a Svelte implementation of web.dev's [GUI Challenges #1](https://web.dev
 
 [Live demo](https://svelte-stories.glitch.me/)
 
+![Demo](demo.gif)
+
 ## Get started
 
 Install the dependencies...
