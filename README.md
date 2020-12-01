@@ -2,6 +2,8 @@
 
 This is a Svelte implementation of web.dev's [GUI Challenges #1](https://web.dev/building-a-stories-component/). Images from [Lorem Picsum](https://picsum.photos/) or taken by me.
 
+[Live demo](https://svelte-stories.glitch.me/)
+
 ## Get started
 
 Install the dependencies...
