@@ -57,9 +57,9 @@
   }
 </style>
 
-<section
+<section 
   style="--stack-order: {stackOrder}; --offset: {offset};"
-  transition:fly={{ duration: 500, x: -100 }}
+  transition:fly="{{duration: 500, x: -100}}"
   class:returning={offset === 0}>
   <div class="heading" style="--stack-order: {user.images.length + 1}">
     <img src={profileSrc} alt={displayname} />
@@ -69,5 +69,5 @@
     </div>
   </div>
 
-  <slot />
+  <slot></slot>
 </section>

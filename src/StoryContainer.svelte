@@ -9,12 +9,12 @@
   let offset = 0;
   let swiping = false;
   let stories;
-  $: median = stories && stories.offsetLeft + stories.clientWidth / 2;
 
   const SWIPE_THRESHOLD = 100;
 
   function handleClick(e) {
     if (swiping) return;
+    const median = stories.offsetLeft + stories.clientWidth / 2;
     const forward = e.clientX > median;
     if (e.ctrlKey) {
       forward ? nextUser() : previousUser(true);
@@ -90,6 +90,8 @@
       currentImageIndex = goToFirstImage
         ? 0
         : getLastImageIndexForCurrentUser();
+    } else {
+      currentImageIndex = 0;
     }
   }
 
@@ -130,11 +132,12 @@
 
   .end {
     position: absolute;
-    top: 50%;
+    top: 45%;
     width: 100%;
     text-align: center;
     font-size: 2rem;
     font-weight: 700;
+    padding: 0 1rem;
   }
 
   #hover,
